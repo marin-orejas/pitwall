@@ -1,21 +1,21 @@
 # PitWall
 
-Android aplikacija za igru prognoza Formule 1 s prijateljima. Korisnici se okupljaju u privatnim ligama i prije svakog trkaćeg vikenda prognoziraju pole position, prva tri mjesta i najbrži krug. Backend nakon utrke preuzima rezultate i boduje prognoze.
+An Android app for a Formula 1 prediction game with friends. Users gather in private leagues and, before each race weekend, predict pole position, the top three and the fastest lap. After the race, the backend fetches the results and scores the predictions.
 
-Projekt kolegija na FOI-ju.
+A course project at FOI.
 
 ## Backend
 
-ASP.NET Core Web API na .NET 10, u mapi `backend/`:
+ASP.NET Core Web API on .NET 10, in the `backend/` folder:
 
-- `PitWall.Api`: endpointi, DI, OpenAPI
-- `PitWall.Business`: poslovna pravila
-- `PitWall.Data`: baza i vanjski izvori podataka
-- `PitWall.Tests`: xUnit testovi
+- `PitWall.Api`: endpoints, DI, OpenAPI
+- `PitWall.Business`: business rules
+- `PitWall.Data`: the database and external data sources
+- `PitWall.Tests`: xUnit tests
 
-Preduvjet je .NET SDK 10 (na Fedori `sudo dnf install dotnet-sdk-10.0`).
+It needs the .NET 10 SDK (on Fedora: `sudo dnf install dotnet-sdk-10.0`).
 
-Naredbe se pokreću iz mape `backend/`, jer `global.json` u njoj određuje SDK i test runner:
+Run the commands from the `backend/` folder, because its `global.json` selects the SDK and the test runner:
 
 ```
 cd backend
@@ -25,4 +25,4 @@ dotnet format PitWall.sln --verify-no-changes
 dotnet run --project PitWall.Api
 ```
 
-API sluša na `http://localhost:5000`. U razvojnom okruženju Swagger UI je na `http://localhost:5000/swagger`, a OpenAPI dokument na `http://localhost:5000/openapi/v1.json`.
+The API listens on `http://localhost:5000`. In the development environment, Swagger UI is at `http://localhost:5000/swagger` and the OpenAPI document at `http://localhost:5000/openapi/v1.json`.
