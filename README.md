@@ -26,3 +26,44 @@ dotnet run --project PitWall.Api
 ```
 
 The API listens on `http://localhost:5000`. In the development environment, Swagger UI is at `http://localhost:5000/swagger` and the OpenAPI document at `http://localhost:5000/openapi/v1.json`.
+
+## Database
+
+The backend uses PostgreSQL 18 through EF Core with the Npgsql provider. The local setup on Fedora, done once:
+
+```
+sudo dnf install postgresql-server pgadmin4 pgadmin4-qt
+sudo postgresql-setup --initdb
+sudo sed -i -E 's/^(host\s.*\s)ident$/\1scram-sha-256/' /var/lib/pgsql/data/pg_hba.conf
+sudo systemctl enable --now postgresql
+sudo -u postgres createuser --pwprompt pitwall
+sudo -u postgres createdb --owner=pitwall pitwall
+```
+
+The `sed` line switches local TCP connections from `ident` to password authentication. The `pitwall` role is not a superuser; it owns the `pitwall` database. pgAdmin 4 connects to `localhost:5432` with the same role.
+
+The connection string is kept in user-secrets, never in the repository. From `backend/`:
+
+```
+read -rsp 'Password: ' PITWALL_DB_PASSWORD; echo
+dotnet user-secrets set --project PitWall.Api "ConnectionStrings:PitWall" "Host=localhost;Port=5432;Database=pitwall;Username=pitwall;Password=$PITWALL_DB_PASSWORD"
+unset PITWALL_DB_PASSWORD
+```
+
+Without `ConnectionStrings:PitWall`, the first database access fails with an error that names the missing key.
+
+### Migrations
+
+`dotnet-ef` is a local tool (`backend/.config/dotnet-tools.json`). From `backend/`:
+
+```
+dotnet tool restore
+dotnet ef database update --project PitWall.Data --startup-project PitWall.Api
+dotnet ef migrations list --project PitWall.Data --startup-project PitWall.Api
+```
+
+After a change to the model, add a migration with a PascalCase name, then apply it with `database update`:
+
+```
+dotnet ef migrations add AddUsers --project PitWall.Data --startup-project PitWall.Api
+```
