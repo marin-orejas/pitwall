@@ -26,8 +26,9 @@ def title_problems(title):
 
 
 def body_problems(body, branch):
-    body = body.replace("\r", "")
-    lines = body.rstrip().split("\n") if body.strip() else []
+    lines = body.replace("\r", "").rstrip("\n").split("\n") if body.strip() else []
+    while lines and not lines[-1].strip():
+        lines.pop()
     problems = []
     trailer = TRAILER_RE.match(lines[-1]) if lines else None
     branch_key = BRANCH_RE.match(branch)
