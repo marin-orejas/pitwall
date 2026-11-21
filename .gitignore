@@ -1,6 +1,13 @@
 # Secrets
 .env
 .env.*
+google-services.json
+secrets.json
+keystore.properties
+*.p12
+*.pfx
+*.pem
+*.key
 
 # OS and editors
 .DS_Store
